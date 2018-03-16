@@ -1,0 +1,5 @@
+export default {
+  USER_LOADED: 'USER_LOADED',
+  SUBMIT: 'SUBMIT',
+  SUBMITTED: 'SUBMITTED',
+};
