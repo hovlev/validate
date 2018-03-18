@@ -5,3 +5,7 @@
 .valid {
   background: #0F0;
 }
+
+.inactive {
+  opacity: 0.5;
+}

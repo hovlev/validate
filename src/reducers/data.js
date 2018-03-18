@@ -17,6 +17,7 @@ const init = {
     postCode: false,
   },
   canSubmit: false,
+  hasSubmitted: false,
   user: {},
 };
 
@@ -53,6 +54,8 @@ export default (state = init, { payload, type }) => {
         validation: validatedCreditCardFields,
         canSubmit: !isInvalid(validatedCreditCardFields),
       });
+    case 'OFFER_SUBMIT':
+      return assoc('hasSubmitted', true, state);
     case 'USER_LOADED':
       return assoc('user', payload, state);
     default: {
