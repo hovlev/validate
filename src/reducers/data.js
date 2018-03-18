@@ -1,5 +1,5 @@
-import { assoc, assocPath, lt, gt, merge, prop, test } from 'ramda';
-import validation from '../constants/validation';
+import { assoc, assocPath, contains, flatten, lt, gt, merge, pipe, prop, test, toPairs } from 'ramda';
+import validationRules from '../constants/validation';
 
 const init = {
   offer: {
@@ -16,6 +16,7 @@ const init = {
     cvv: false,
     postCode: false,
   },
+  canSubmit: false,
   user: {},
 };
 
@@ -30,8 +31,8 @@ const validateOffer = (value, { offer }) => {
   });
 };
 
-const validateCreditCard = ({ value, rule }, state) =>
-  assocPath(['validation', rule], test(validation[rule], value), state);
+const validateCreditCard = ({ value, rule }, { validation }) =>
+  assoc(rule, test(prop(rule, validationRules), value), validation);
 
 export default (state = init, { payload, type }) => {
   switch (type) {
@@ -42,7 +43,16 @@ export default (state = init, { payload, type }) => {
         offer: validateOffer(payload, state),
       });
     case 'CREDIT_CARD_CHANGE':
-      return validateCreditCard(payload, state);
+      const isInvalid = pipe(
+        toPairs,
+        flatten,
+        contains(false)
+      );
+      const validatedCreditCardFields = validateCreditCard(payload, state);
+      return merge(state, {
+        validation: validatedCreditCardFields,
+        canSubmit: !isInvalid(validatedCreditCardFields),
+      });
     case 'USER_LOADED':
       return assoc('user', payload, state);
     default: {
