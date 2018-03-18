@@ -10,7 +10,7 @@ const FormField = ({ changeEvent, id, label, rule, valid}) => (
   </fieldset>
 );
 
-const CreditCard = ({ validation, creditCardChange }) => [
+const CreditCard = ({ offer, validation, creditCardChange }) => [
   <p>Your offer of {offer.currency}{offer.value} looks good!</p>,
   <FormField id="credit-card-number" rule="number" changeEvent={creditCardChange} label="Credit card number" valid={validation.number} />,
   <FormField id="credit-card-expiry" rule="expiryDate" changeEvent={creditCardChange} label="Expiry date" valid={validation.expiryDate} />,
@@ -19,6 +19,7 @@ const CreditCard = ({ validation, creditCardChange }) => [
 ];
 
 export default connect(state => ({
+  offer: state.data.offer,
   validation: state.data.validation,
 }), dispatch => ({
   creditCardChange: (value, rule) =>
