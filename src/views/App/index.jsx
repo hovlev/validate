@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actions from '../../actions';
 import styles from './index.css';
+import CreditCard from '../CreditCard';
 
 const HelpOffer = ({ offer }) =>
   <p>The <span className={offer.below ? styles.invalid : styles.valid}>{`minimum offer is ${offer.currency}${offer.min}`}</span> and the <span className={offer.above ? styles.invalid : styles.valid}>{`maximum offer is ${offer.currency}${offer.max}`}</span>.</p>;
@@ -15,6 +16,7 @@ const App = ({ offer, user, offerChange }) => (
         <p>{offer.currency}</p>
         <input
           onChange={e => offerChange(e.target.value)}
+          className={offer.validated ? styles.valid : offer.value ? styles.invalid : ''}
           id="offer"
           min={offer.min}
           max={offer.max}
@@ -26,10 +28,10 @@ const App = ({ offer, user, offerChange }) => (
         {offer.value > 0 &&
           <HelpOffer offer={offer} />
         }
-        {offer.validated &&
-          <p>Your offer of {offer.currency}{offer.value} looks good! Ready to submit?</p>
-        }
       </fieldset>
+      {offer.validated &&
+        <CreditCard />
+      }
     </form>
   </section>
 );
