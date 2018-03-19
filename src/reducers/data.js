@@ -34,6 +34,11 @@ const init = {
   },
 };
 
+/**
+  Returns whether the value is above or below the max/min, so the UI can
+  highlight the correct paragraph span, also decides whether a user can
+  continue with credit card validation (validated)
+*/
 const validateOffer = (value, { offer }) => {
   const below = lt(value, prop('min', offer));
   const above = gt(value, prop('max', offer));
@@ -45,9 +50,17 @@ const validateOffer = (value, { offer }) => {
   });
 };
 
-const validateCreditCard = ({ value, rule }, { validation }) =>
+/**
+  Tests a particular credit card input field against a rule (number, expiryDate,
+  cvv or postCode, all these rules are stored in constants/validation)
+*/
+const validateCreditCardRule = ({ value, rule }, { validation }) =>
   assoc(rule, test(prop(rule, validationRules), value), validation);
 
+/**
+  Selecting the populate button results in the defaults being applied to
+  the form
+*/
 const populate = state => {
   const offer = prop('offer', state);
   return merge(state, {
@@ -61,13 +74,17 @@ const populate = state => {
   });
 };
 
+/**
+  Contains logic deciding whether all the input fields have passed validation
+  (checks if any contain the false boolean)
+*/
 const creditCardChange = (payload, state) => {
   const isInvalid = pipe(
     toPairs,
     flatten,
     contains(false)
   );
-  const validatedCreditCardFields = validateCreditCard(payload, state);
+  const validatedCreditCardFields = validateCreditCardRule(payload, state);
   const card = prop('card', state);
   return merge(state, {
     validation: validatedCreditCardFields,
